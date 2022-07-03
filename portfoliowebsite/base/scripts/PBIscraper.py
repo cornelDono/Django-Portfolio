@@ -42,14 +42,47 @@ def sql_create_table(): #Check for PBISTORAGE table
             con.close()
             print("Соединение с SQLite закрыто")
 
+def get_last_article_name(): #Get last article name from PBIStorage to check for new posts
+    try:
+        con = sqlite3.connect(sql_path)
+        cursor = con.cursor()
+        print("База данных подключена к SQLite")
+
+        cursor.execute('''SELECT Article_title FROM PBIStorage ORDER BY ID DESC LIMIT 1''')
+        records = cursor.fetchall()
+        print(records)
+        arcticle_name = ''.join(records[0])
+        return arcticle_name
+    except sqlite3.Error as error:
+        return ("Ошибка при работе с SQLite", error)
+    finally:
+        if (con):
+            con.close()
+            print("Соединение с SQLite закрыто")
+
+
+def inges_data(data_dict): # Ingest data to PBIStorage
+    con = sqlite3.connect(sql_path)
+    cursor = con.cursor()
+    for data in data_dict:
+        cursor.execute('''INSERT INTO PBIStorage (Article_title, Article_date, Article_short_text, Aricle_list_tags, Article_post_link) VALUES (?, ?, ?, ?, ?) ''', 
+                        [data['Article_title'], data['Article_date'], data['Article_short_text'], data['Aricle_list_tags'], data['Article_post_link']])
+        con.commit()
+    print("Переменные Python успешно вставлены в таблицу PBI_storage")
+    cursor.close()
+
+def get_url(url): #Get HTML file with first page from PBI Forum
+    s = requests.Session()
+    response = s.get(url=url, headers=headers)
+    with open('index.html', 'w', encoding='utf-8') as file:
+        file.write(response.text)
+
 
 def collect_data(): #Collect all data from PBI Forum
     for i in range(1, 170):    # 170
         print(f'https://powerbi.microsoft.com/en-us/blog/?page={i}')
         s = requests.Session()
         response = s.get(url=f'https://powerbi.microsoft.com/en-us/blog/?page={i}', headers=headers)
-        # with open('index.html', 'r', encoding='utf-8') as file:
-        #     response = file.read()
         soup = BeautifulSoup(response.text, 'lxml')
         section = soup.find('div', class_='column large-7')
         posts = section.findAll(class_='post')
@@ -87,8 +120,6 @@ def collect_data_increment(last_article_name): # Collect only new data from PBI 
     while i < pages:
         s = requests.Session()
         response = s.get(url=f'https://powerbi.microsoft.com/en-us/blog/?page={i}', headers=headers)
-        # with open('index.html', 'r', encoding='utf-8') as file:
-        #     response = file.read()
         soup = BeautifulSoup(response.text, 'lxml')
         section = soup.find('div', class_='column large-7')
         posts = section.findAll(class_='post')
@@ -127,7 +158,15 @@ def collect_data_increment(last_article_name): # Collect only new data from PBI 
 
 
 def main():
-    sql_create_table()
+    # sql_create_table()
+    # print(collect_data_increment())
+    # if data_dict:
+    #     inges_data(data_dict)
+    # else:
+    #     print('No new data to ingest')
+    get_last_article_name()
+
+
 
 
 if __name__=='__main__':

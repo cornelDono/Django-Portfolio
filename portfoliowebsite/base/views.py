@@ -6,6 +6,7 @@ from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Project, Skill, PBI_articles
 from .scripts.PBIscraper import get_last_article_name, collect_data, collect_data_increment
+import pandas as pd 
 
 # Create your views here.
 def homePage(request):
@@ -33,6 +34,6 @@ def pbiProjectPage(request):
                     b = PBI_articles(Article_title=data['Article_title'], Article_date=data['Article_date'], Article_short_text=data['Article_short_text'], 
                                                                     Aricle_list_tags=data['Aricle_list_tags'], Article_post_link=data['Article_post_link'])
                     b.save()
-    pbi_articles = PBI_articles.objects.all().order_by('-id')[:10]
+    pbi_articles = PBI_articles.objects.all().order_by('-id')[:12]
     context = {'pbi_articles':pbi_articles}
     return render(request, 'base/pbiProject.html', context)
