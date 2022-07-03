@@ -1,10 +1,19 @@
-import datetime
 from statistics import mode
 from turtle import title
 from django.db import models
 import uuid
+from django.db.models import Func
 
-# Create your models here.
+class Month(Func):
+    function = 'STRFTIME'
+    template = '%(function)s("%%m", %(expressions)s)'
+    output_field = models.TextField()
+
+class Year(Func):
+    function = 'STRFTIME'
+    template = '%(function)s("%%Y", %(expressions)s)'
+    output_field = models.TextField()
+
 class Project(models.Model):
     title = models.CharField(max_length=200)
     thumbnail = models.ImageField(null=True)

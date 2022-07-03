@@ -1,12 +1,15 @@
 from cgitb import html
 from multiprocessing import context
+from optparse import Values
 from urllib.request import Request
 from django.shortcuts import render
-from django.db.models import Max
+from django.db.models import Max, Count
+from django.db import models
+from django.db.models.functions import TruncMonth, TruncYear
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Project, Skill, PBI_articles
+from .models import Project, Skill, PBI_articles, Month, Year
 from .scripts.PBIscraper import get_last_article_name, collect_data, collect_data_increment
-import pandas as pd 
+from .scripts.charts import create_chart
 
 # Create your views here.
 def homePage(request):
@@ -22,7 +25,13 @@ def projectPage(request, pk):
     return render(request, 'base/project.html', context)
 
 def pbiProjectPage(request):
-    print(request.POST)
+
+    articles_year = PBI_articles.objects.annotate(Year = Year('Article_date')).values('Year').annotate(c=Count('Article_title'))
+    articles_month = PBI_articles.objects.annotate(Month = Month('Article_date')).values('Month').annotate(c=Count('Article_title'))
+
+    year_plot = create_chart(articles_year, 'Year')
+    month_plot = create_chart(articles_month, 'Month')
+
     if request.method == "POST":
         if request.POST.get("refresh"):
             max_id = PBI_articles.objects.aggregate(Max('id'))['id__max']
@@ -35,5 +44,5 @@ def pbiProjectPage(request):
                                                                     Aricle_list_tags=data['Aricle_list_tags'], Article_post_link=data['Article_post_link'])
                     b.save()
     pbi_articles = PBI_articles.objects.all().order_by('-id')[:12]
-    context = {'pbi_articles':pbi_articles}
+    context = {'pbi_articles':pbi_articles, 'articles_year':articles_year, 'articles_month':articles_month, 'year_plot':year_plot, 'month_plot':month_plot}
     return render(request, 'base/pbiProject.html', context)

@@ -6,6 +6,9 @@
     {% csrf_token %}
     <h1> PBI project </h1>
     <button type="submit", name="refresh", value="refresh" class="btn btn-success">Refresh</button>
+  
+    {{year_plot|safe}}
+    {{month_plot|safe}}
 
 <div class="list-group mx-auto" style="width: 65%;">
     {% for article in pbi_articles %}
