@@ -10,6 +10,8 @@ def create_chart(list, time):
         ]
 
     df = pd.DataFrame(data)
-    fig = px.bar(df, x=f'{time}', y='Count')
+    fig = px.bar(df, x=f'{time}', y='Count',
+                 text_auto='.2s', title=f'Amount of articles per {time}')
+    fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     plot = fig.to_html()
     return plot
