@@ -122,6 +122,12 @@ body{
     max-width: 800px;
 }
 
+.wrapper--pbi {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 200px;
+  }
+
 @media (max-width:900px){
 
     .skills--container{
@@ -186,3 +192,4 @@ body{
         text-align: center;
     }
 }
+
