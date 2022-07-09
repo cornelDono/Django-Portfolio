@@ -51,16 +51,16 @@ class PBI_articles(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def tags_as_list(self):
+        return self.Aricle_list_tags.split(',')
 
 class Last_Refreshh(models.Model):
     DateTime = models.DateTimeField()
     Nickname = models.CharField(max_length=100)
 
-
-# class Articles_perYear(models.Model):
-#     year = models.IntegerField(primary_key=True)
-#     amount_articles = models.IntegerField()
-
-#     class Meta:
-#         managed = False
-#         db_table = 'Articles_perYear'
+class Google_trends(models.Model):
+    DateTime = models.DateField()
+    PowerBi_trend = models.IntegerField()
+    Tableau_trend = models.IntegerField()
+    Qlik_trend = models.IntegerField()

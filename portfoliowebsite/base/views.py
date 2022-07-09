@@ -2,14 +2,15 @@ from cgitb import html
 from multiprocessing import context
 from optparse import Values
 from urllib.request import Request
+from xmlrpc.client import DateTime
 from django.shortcuts import render
 from django.db.models import Max, Count
 from django.db import models
 from django.db.models.functions import TruncMonth, TruncYear
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Project, Skill, PBI_articles, Month, Year
-from .scripts.PBIscraper import get_last_article_name, collect_data, collect_data_increment
-from .scripts.charts import create_chart
+from .models import Project, Skill, PBI_articles, Month, Year, Google_trends
+from .scripts.PBIscraper import collect_data_increment
+from .scripts.charts import create_chart, google_trends_data, google_trends_create_plot
 
 # Create your views here.
 def homePage(request):
@@ -40,9 +41,20 @@ def pbiProjectPage(request):
             if data_dict:
                 data_dict.reverse()
                 for data in data_dict:
-                    b = PBI_articles(Article_title=data['Article_title'], Article_date=data['Article_date'], Article_short_text=data['Article_short_text'], 
-                                                                    Aricle_list_tags=data['Aricle_list_tags'], Article_post_link=data['Article_post_link'])
+                    b = PBI_articles(Article_title = data['Article_title'], Article_date = data['Article_date'], Article_short_text = data['Article_short_text'], 
+                                                                    Aricle_list_tags = data['Aricle_list_tags'], Article_post_link = data['Article_post_link'])
                     b.save()
+            
+            trends_df = google_trends_data()
+            if not trends_df.empty:
+                Google_trends.objects.all().delete()
+                for index, row in trends_df.iterrows():
+                    g = Google_trends(DateTime = row['date'], PowerBi_trend = row['power bi'], Tableau_trend = row['tableau'], Qlik_trend = row['qlik'])
+                    g.save()
+            
+    g_plot_data = google_trends_data()
+    google_trends_plot = google_trends_create_plot(g_plot_data)
+
     pbi_articles = PBI_articles.objects.all().order_by('-id')[:12]
-    context = {'pbi_articles':pbi_articles, 'articles_year':articles_year, 'articles_month':articles_month, 'year_plot':year_plot, 'month_plot':month_plot}
+    context = {'pbi_articles':pbi_articles, 'articles_year':articles_year, 'articles_month':articles_month, 'year_plot':year_plot, 'month_plot':month_plot, 'google_trends_plot':google_trends_plot}
     return render(request, 'base/pbiProject.html', context)

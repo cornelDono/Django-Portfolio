@@ -9,12 +9,8 @@
     <button type="submit", name="refresh", value="refresh" class="btn btn-success">Refresh</button>
 
     <div class="grid-container" style="display: grid;
-                                        grid-template-columns: auto auto auto;
-                                        padding: 2em; gap: 10px">
-      <div class="grid-item rounded" style="
-      background-color: #FFFFFF;
-      padding: 10px;
-      text-align: center;">1</div>
+                                        grid-template-columns: auto auto;
+                                        gap: 10px; padding-left: 1em; padding-right: 1em; padding-bottom: 1em;">
       <div class="grid-item rounded"  style="
       background-color: #FFFFFF;
       padding: 10px;
@@ -25,6 +21,12 @@
       text-align: center;">{{month_plot|safe}}</div>  
     </div>
 
+    <div class="grid-container" style="display: grid;
+                                        grid-template-columns: auto; padding-left: 1em; padding-right: 1em; padding-bottom: 1em;">
+      <div class="grid-item rounded"  style="
+        background-color: #FFFFFF;
+        text-align: center;">{{google_trends_plot|safe}}</div>  
+    </div>
 
 
   <div class="list-group mx-auto" style="width: 65%;">
@@ -35,7 +37,7 @@
             <small>{{article.Article_date}}</small>
           </div>
           <p class="mb-1">{{article.Article_short_text}}</p>
-          <small style="background-color: #FFEF00; border: 2px solid;">{{article.Aricle_list_tags}}</small>
+          <small style="background-color: #FFEF00; border: 2px solid;">{% for tag in article.Aricle_list_tags.tags_as_list%}<h5>{{tag}}</h5>{% endfor %}</small>
         </a>
       {% endfor %}
   </div> 
