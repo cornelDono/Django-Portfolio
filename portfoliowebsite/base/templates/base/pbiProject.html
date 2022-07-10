@@ -4,31 +4,62 @@
 {% block content %}
 <form method="post", name="#">
     {% csrf_token %}
-
+  <center>
     <h1> PBI project </h1>
-    <button type="submit", name="refresh", value="refresh" class="btn btn-success">Refresh</button>
+    
+    <hr/>
 
-    <div class="grid-container" style="display: grid;
-                                        grid-template-columns: auto auto;
-                                        gap: 10px; padding-left: 1em; padding-right: 1em; padding-bottom: 1em;">
-      <div class="grid-item rounded"  style="
-      background-color: #FFFFFF;
-      padding: 10px;
-      text-align: center;">{{year_plot|safe}}</div>
-      <div class="grid-item rounded"  style="
-      background-color: #FFFFFF;
-      padding: 10px;
-      text-align: center;">{{month_plot|safe}}</div>  
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Refresh all data
+    </button>
+  </center>
+  <hr/>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-3">
+              <div class="modal-body">
+              <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" name="Nickname">
+              <p>Last time refreshed by <span style="font-weight:bold">{{last_refresh_nick.Nickname}}</span> <span> at {{last_refresh_nick.DateTime}}</span></p>
+          </div>
+        </div> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit", name="refresh", value="refresh" class="btn btn-primary">Refresh</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="grid-container" style="display: grid;
-                                        grid-template-columns: auto; padding-left: 1em; padding-right: 1em; padding-bottom: 1em;">
-      <div class="grid-item rounded"  style="
-        background-color: #FFFFFF;
-        text-align: center;">{{google_trends_plot|safe}}</div>  
+  <!-- PBI Charts -->
+  <div class="grid-container" style="display: grid;grid-template-columns: auto auto; gap: 10px; padding-left: 1em; padding-right: 1em; padding-bottom: 1em;">
+    <div class="grid-item rounded"  style="background-color: #FFFFFF;padding: 10px;text-align: center;">
+      {{year_plot|safe}}
     </div>
+    <div class="grid-item rounded"  style="background-color: #FFFFFF;padding: 10px;text-align: center;">
+      {{month_plot|safe}}
+    </div>  
+  </div>
 
+  <!-- Comparison Charts Google Trends -->
+  <div class="grid-container" style="display: grid; grid-template-columns: auto; padding-left: 1em; padding-right: 1em; padding-bottom: 1em;">
+    <div class="grid-item rounded"  style="background-color: #FFFFFF;text-align: center;">
+      {{google_trends_plot|safe}}
+    </div>  
+  </div>
 
+  <!-- PBI articles list -->
   <div class="list-group mx-auto" style="width: 65%;">
       {% for article in pbi_articles %}
       <a href="https://powerbi.microsoft.com{{article.Article_post_link}}" class="list-group-item list-group-item-action flex-column align-items-start" style="margin-top: 10px;">
@@ -36,10 +67,11 @@
             <h5 class="mb-1" style="color : black">{{article.Article_title}}</h5>
             <small>{{article.Article_date}}</small>
           </div>
-          <p class="mb-1">{{article.Article_short_text}}</p>
+          <p class="mb-1">{{article.Article_short_text|truncatewords:"40" }}</p>
           <small style="background-color: #FFEF00; border: 2px solid;">{% for tag in article.Aricle_list_tags.tags_as_list%}<h5>{{tag}}</h5>{% endfor %}</small>
         </a>
       {% endfor %}
   </div> 
+
 {% endblock content %}
 

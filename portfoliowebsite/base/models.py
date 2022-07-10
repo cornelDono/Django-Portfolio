@@ -1,5 +1,6 @@
 from statistics import mode
 from turtle import title
+from xmlrpc.client import DateTime
 from django.db import models
 import uuid
 from django.db.models import Func
@@ -64,3 +65,7 @@ class Google_trends(models.Model):
     PowerBi_trend = models.IntegerField()
     Tableau_trend = models.IntegerField()
     Qlik_trend = models.IntegerField()
+
+class Refresh_data(models.Model):
+    DateTime = models.DateTimeField(auto_now=True)
+    Nickname = models.CharField(max_length=200)
