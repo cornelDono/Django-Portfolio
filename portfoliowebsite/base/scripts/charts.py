@@ -1,4 +1,3 @@
-from operator import ge
 import pandas as pd
 import plotly.express as px
 from pytrends.request import TrendReq
@@ -31,15 +30,6 @@ def create_chart(list, time):
     plot = fig.to_html()
     return plot
 
-
-def google_trends_data():
-    pytrend = TrendReq()
-    kw_list = ["power bi", "tableau", "qlik"] # list of keywords to get data 
-    pytrend.build_payload(kw_list, cat=0, timeframe='today 12-m', geo='RU') 
-    data = pytrend.interest_over_time() 
-    data = data.reset_index() 
-    return data
-
 def google_trends():
     pytrend = TrendReq()
     kw_list = ["power bi", "tableau", "qlik"] # list of keywords to get data 
@@ -50,8 +40,17 @@ def google_trends():
     plot = fig.to_html()
     return plot
 
+
+def google_trends_data():
+    pytrend = TrendReq()
+    kw_list = ["Power BI", "Tableau", "Qlik", "Looker", "Microstrategy"] # list of keywords to get data 
+    pytrend.build_payload(kw_list, cat=0, timeframe='today 5-y') 
+    data = pytrend.interest_over_time() 
+    data = data.reset_index() 
+    return data
+
 def google_trends_create_plot(data):
-    fig = px.line(data, x="date", y=["power bi", "tableau", "qlik"], title='Keyword Web Search Interest Over Time')
+    fig = px.line(data, x="date", y=["Power BI", "Tableau", "Qlik", "Looker", "Microstrategy"], title='Keyword Web Search Interest Over Time')
     fig.update_layout(
         plot_bgcolor = "white",  
         title={
@@ -66,4 +65,3 @@ def google_trends_create_plot(data):
     fig.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#BFBFBD')
     plot = fig.to_html()
     return plot
-    
