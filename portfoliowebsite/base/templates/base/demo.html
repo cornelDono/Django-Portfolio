@@ -1,0 +1,21 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block content %}
+<script src='{% static 'js/main.js' %}'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<button type="button" class="btn btn-success btn-lg" id='btn'>
+    GET
+</button>
+
+<button type="button" class="btn btn-success btn-lg" id='btn2'>
+    GET 2
+</button>
+<ul id='seconds'>
+
+</ul>
+
+<p>This is a paragraph.</p>
+<p>This is another paragraph.</p>
+
+{% endblock content %}

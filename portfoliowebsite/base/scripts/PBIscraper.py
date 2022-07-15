@@ -154,20 +154,3 @@ def collect_data_increment(last_article_name): # Collect only new data from PBI 
         if post_amount == len(data_dict):
             pages += 1
     return data_dict
-
-
-
-def main():
-    # sql_create_table()
-    # print(collect_data_increment())
-    # if data_dict:
-    #     inges_data(data_dict)
-    # else:
-    #     print('No new data to ingest')
-    get_last_article_name()
-
-
-
-
-if __name__=='__main__':
-    main()

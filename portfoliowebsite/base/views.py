@@ -9,6 +9,7 @@ from django.db import models
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models.functions import TruncMonth, TruncYear
 from django.http import HttpResponse, HttpResponseRedirect
+from django.views import View
 from .models import Project, Skill, PBI_articles, Month, Year, Google_trends, Refresh_data
 from .scripts.PBIscraper import collect_data_increment
 from .scripts.charts import create_chart, google_trends_data, google_trends_create_plot
@@ -67,3 +68,10 @@ def pbiProjectPage(request):
     pbi_articles = PBI_articles.objects.all().order_by('-id')[:12]
     context = {'pbi_articles':pbi_articles, 'articles_year':articles_year, 'articles_month':articles_month, 'year_plot':year_plot, 'month_plot':month_plot, 'google_trends_plot':google_trends_plot, 'last_refresh':last_refresh, 'last_refresh_nick':last_refresh_nick, "form":UserCreationForm}
     return render(request, 'base/pbiProject.html', context)
+
+
+class AjaxHandlerView(View):
+    def get(self, request):
+        text = request.GET.get('button_text')
+        print(text)
+        return render(request, 'base/demo.html')

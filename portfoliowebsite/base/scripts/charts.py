@@ -67,7 +67,3 @@ def google_trends_create_plot(data):
     plot = fig.to_html()
     return plot
     
-if __name__=='__main__':
-    data = google_trends_data()
-    for index, row in data.iterrows():
-        print(row['date'], row['power bi'] )
